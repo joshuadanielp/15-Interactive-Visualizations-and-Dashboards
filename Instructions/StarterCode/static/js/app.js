@@ -1,11 +1,33 @@
-// function buildPlot(sample) {
+// function getPlot(id) {
 
 // Use the D3 library to read in samples.json.
-d3.json("/Instructions/data/samples.json").then(function(data) {
-    console.log(data);
-  });
+    d3.json("/Instructions/StarterCode/samples.json").then(function(data) {
+        console.log(data);
+     });
 
 // Create a horizontal bar chart with a dropdown menu to display the top 10 OTUs found in that individual.
+
+    // filter sample values by id 
+    var samples = data.samples.filter(s => s.id.toString() === id)[0];
+    console.log(samples);
+
+    // Getting the top 10 
+    var samplevalues = samples.sample_values.slice(0, 10).reverse();
+
+    // get only top 10 otu ids for the plot OTU and reversing it. 
+    var OTU_top = (samples.otu_ids.slice(0, 10)).reverse();
+    
+    // get the otu id's to the desired form for the plot
+    var OTU_id = OTU_top.map(d => "OTU " + d)
+
+      console.log(`OTU IDS: ${OTU_id}`)
+
+
+    // get the top 10 labels for the plot
+    var labels = samples.otu_labels.slice(0, 10);
+
+    //   console.log(`Sample Values: ${samplevalues}`)
+    //   console.log(`Id Values: ${OTU_top}`)
 
 
 // Use sample_values as the values for the bar chart.
@@ -31,54 +53,52 @@ d3.json("/Instructions/data/samples.json").then(function(data) {
 
   
     // d3.json(url).then(function(data) {
-      // Grab values from the response json object to build the plots
-      var name = data.dataset.name;
-      var stock = data.dataset.dataset_code;
-      var startDate = data.dataset.start_date;
-      var endDate = data.dataset.end_date;
-      // Print the names of the columns
-      console.log(data.dataset.column_names);
-      // Print the data for each day
-      console.log(data.dataset.data);
-      var dates = data.dataset.data.map(row => row[0]);
-      // console.log(dates);
-      var closingPrices = data.dataset.data.map(row => row[4]);
-      // console.log(closingPrices);
-  
-      var trace1 = {
-        type: "scatter",
-        mode: "lines",
-        name: name,
-        x: dates,
-        y: closingPrices,
-        line: {
-          color: "#17BECF"
-        }
-      };
-  
+    // Grab values from the response json object to build the plots
+        var name = samples.name;
+        var OTU_id = samples.otu_ids;
+        var otu_labels = samples.otu_labels;
+        var otu = samples.id;
+        var sample_values = samples.sample_values;
+        // Print the names of the columns
+        console.log(samples.column_names);
+        // Print the data for each OTU
+        console.log(samples.data);
+        
+        var trace1 = {
+        x: sample_values,
+        y: OTU_id,
+        text: labels,
+        marker: {
+            color: 'rgb(142,124,195)'},
+        type:"bar",
+        orientation: "h",
+        };
+
       var data = [trace1];
   
+    // create data variable
+      var data = [trace];
+
+    // create layout variable to set plots layout
       var layout = {
-        title: `${stock} closing prices`,
-        xaxis: {
-          range: [startDate, endDate],
-          type: "date"
-        },
-        yaxis: {
-          autorange: true,
-          type: "linear"
-        }
+          title: "Top 10 OTU",
+          yaxis:{
+              tickmode:"linear",
+          },
+          margin: {
+              l: 100,
+              r: 100,
+              t: 100,
+              b: 30
+          }
       };
   
       Plotly.newPlot("plot", data, layout);
   
-    
-  }
-  
-  // Add event listener for submit button
-  d3.select("#selDataset").on("click", handleSubmit);
+}
+          
 
-
+// *** Reference For the Dataset *** \\
 
 // metadata: Array(153)
 // [0 … 99]
