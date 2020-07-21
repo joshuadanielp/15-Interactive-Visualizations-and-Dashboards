@@ -1,5 +1,5 @@
 // Use the D3 library to read in samples.json.
-d3.json("/samples.json").then(function(data) {
+d3.json("./samples.json").then(function(data) {
     var idList = new Array()
     data.samples.forEach(function(sample) {
         idList.push(sample["id"])
@@ -17,6 +17,8 @@ function buildPlot() {
     var dataset = dropdown.property("value");
     updatePlotly(dataset);
 }
+
+//optionChanged function added in...
 
 var metadata = data.metadata;
 var test = data.samples;
